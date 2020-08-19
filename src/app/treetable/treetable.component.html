@@ -1,0 +1,36 @@
+<table fd-table>
+    <thead fd-table-header>
+        <tr fd-table-row>
+            <th fd-table-cell>Object</th>
+            <th fd-table-cell>Blocking Type</th>
+            <th fd-table-cell>Description</th>
+            <th fd-table-cell>Last Changed</th>
+        </tr>
+    </thead>
+    <tbody fd-table-body>
+        <ng-container *ngTemplateOutlet="recursiveTreeTableTmpl; context:{list: treeData}"></ng-container>
+    </tbody>
+</table>
+
+<ng-template #recursiveTreeTableTmpl let-list="list">
+    <ng-container *ngFor="let node of list">
+        <tr fd-table-row>
+            <td fd-table-cell>
+                <span>{{spaces(node.level)}}</span>
+                <ng-container *ngIf="node.children.length > 0">
+                    <fd-icon *ngIf="node.expanded" [glyph]="'navigation-down-arrow'" (click)="clickCollapsed(node)"></fd-icon>
+                    <fd-icon *ngIf="!node.expanded" [glyph]="'navigation-right-arrow'" (click)="clickExpanded(node)"></fd-icon>
+                </ng-container>
+                <span>&nbsp;&nbsp;</span>
+                <span>{{node.object}}</span>
+            </td>
+            <td fd-table-cell>{{node.blockType}}</td>
+            <td fd-table-cell>{{node.description}}</td>
+            <td fd-table-cell>{{node.lastChanged}}</td>
+        </tr>
+    
+        <ng-container *ngIf="node.expanded && node.children.length > 0">
+            <ng-container *ngTemplateOutlet="recursiveTreeTableTmpl; context:{list: node.children}"></ng-container>
+        </ng-container>
+    </ng-container>
+</ng-template>
